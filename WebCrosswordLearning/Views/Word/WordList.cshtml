@@ -1,0 +1,24 @@
+﻿@model WebCrosswordLearning.ViewModels.WordListViewModel
+
+@{
+    ViewData["Title"] = "Words";
+}
+<h2>@ViewData["Title"]</h2>
+
+
+<div>
+    <div style="float:left">
+        @foreach (var word in Model.Words)
+        {
+            <div><a asp-action="WordList" asp-route-id="@word.Id">@word.Value</a></div>
+
+        }
+    </div>
+    <div>
+        @if (@Model.SelectedWord != null)
+        {
+            <div style="padding-left: 40px;">@Model.SelectedWord.Definition</div>
+        }
+    </div>
+</div>
+<div style="clear:both;"></div>
