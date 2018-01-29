@@ -10,7 +10,7 @@ namespace DesctopCrosswordLearning.ViewModel
 
     public class MainViewModel : ViewModelBase
     {
-        private IWordSourceService wordSourceService;
+        private IWordSourceService WordSourceService { get;}
         private ObservableCollection<Word> selectedWords = new ObservableCollection<Word>();
 
         public ObservableCollection<Word> SelectedWords
@@ -27,13 +27,14 @@ namespace DesctopCrosswordLearning.ViewModel
 
         public MainViewModel(IWordSourceService wordSourceService)
         {
-            this.wordSourceService = wordSourceService;
-
+            WordSourceService = wordSourceService;
+            QuantityWords = 2;
+            RefreshWords();
         }
 
         public void RefreshWords()
         {
-            var words = wordSourceService.GetWords(QuantityWords);
+            var words = WordSourceService.GetWords(QuantityWords);
             SelectedWords = new ObservableCollection<Word>(words);
         }
     }

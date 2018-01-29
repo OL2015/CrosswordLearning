@@ -20,7 +20,6 @@ namespace DesctopCrosswordLearning.Services
 
         public IEnumerable<Word> GetWords(int quantityWords)
         {
-
             var words = wordsource.GetWords(quantityWords);
             return words;
         }
