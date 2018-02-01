@@ -5,7 +5,7 @@ namespace LogicCrosswordLearning
 {
     public class Crossword
     {
-        public char[,] Board { get; private set; } 
+        public char[,] Board { get;  set; } 
         public int N { get; private set; } //size X
         public int M { get; private set; } //size Y
         public Dictionary<Tuple<int, int>, char> UserAnswers { get; set; }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicCrosswordLearning.Services;
 
 namespace LogicCrosswordLearning
 {
@@ -11,6 +12,7 @@ namespace LogicCrosswordLearning
     {
         private string filename;
         List<Word> words;
+        CrosswordService crosswordService;
 
         public int Capacity { get; private set; }
 
@@ -18,6 +20,8 @@ namespace LogicCrosswordLearning
         public FileWordSource(string filename)
         {
             this.filename = filename;
+            crosswordService = new CrosswordService();
+            crosswordService.GetCrossword(5,5, GetWords(2));
         }
 
         public IEnumerable<Word> GetWords(int cnt)

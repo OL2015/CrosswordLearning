@@ -79,7 +79,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ServicesMVVM\IWordSourceService.cs" />
-    <Compile Include="ServicesMVVM\WordSourceService.cs" />
+    <Compile Include="WordSourceService.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">

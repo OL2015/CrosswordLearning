@@ -12,7 +12,7 @@ namespace LogicCrosswordLearning.Services
             foreach (var word in words)
             {
                 //var wordToInsert = ((bool)RTLRadioButton.IsChecked) ? word.Reverse().Aggregate("",(x,y) => x + y) : word;
-                var addedWord = crosswordCreator.AddWord(word.ToString());
+                var addedWord = crosswordCreator.AddWord(word.Value.ToString());               
                 switch (addedWord.Item3)
                 {
                     case 0:
