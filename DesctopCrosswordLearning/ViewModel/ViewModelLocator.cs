@@ -53,7 +53,7 @@ namespace DesctopCrosswordLearning.ViewModel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
             "CA1822:MarkMembersAsStatic",
             Justification = "This non-static member is needed for data binding purposes.")]
-        public static MainViewModel Main
+        public static MainViewModel Main //dsljf'sdjfk
         {
             get
             {

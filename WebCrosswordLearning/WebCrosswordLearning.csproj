@@ -19,7 +19,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\style.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LogicCrosswordLearning\LogicCrosswordLearning.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Style\" />
   </ItemGroup>
 
 </Project>

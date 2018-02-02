@@ -7,5 +7,6 @@ namespace WebCrosswordLearning.Services
     public interface IWordSourceService
     {    
         IEnumerable<Word> GetWords(int cnt);
+        Crossword GetCrossword(int? n, int? m);
     }
 }

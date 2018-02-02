@@ -1,0 +1,46 @@
+﻿@model LogicCrosswordLearning.Crossword
+
+@{
+
+    ViewData["Title"] = "Crossword";
+}
+
+
+
+<script>
+    $(document).ready(
+        function () {
+            $(".crossword-row > div").click(function (event) {
+                alert("1");
+                //var kid = $(event.target).child().hasClass("invisible-char");
+                $(".crossword-row > div").closest("span").removeClass("invisible-char").addClass("visible-char");
+            });
+        }
+    )
+</script>
+
+
+<h2>@ViewData["Title"]</h2>
+<div id="crossword">
+    <div id="board" style="width: @(Model.M*27+1)px; height: @(Model.N*27+1)px">
+        @for (int row = 0; row < Model.M; row++)
+        {
+            <div class="crossword-row">
+                @for (int col = 0; col < Model.N; col++)
+                {
+                    bool val = char.IsLetter(Model.Board[col, row]);
+                    @if (!val)
+                    {
+                        <div class="blank"><span>_</span></div>
+                    }
+                    else
+                    {
+                        <div class=""><span class="invisible-char">@Model.Board[col, row]</span></div>
+                    }
+                }
+            </div>
+
+        }
+    </div>
+    <div id="container-definitions"></div>
+</div>

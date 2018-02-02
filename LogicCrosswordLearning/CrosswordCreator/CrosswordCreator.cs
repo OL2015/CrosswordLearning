@@ -83,6 +83,12 @@ namespace LogicCrosswordLearning.CrosswordCreator
 
         public bool inRTL{ get; set; }
 
+        public Crossword GetCrossword()
+        {
+            Crossword crossword = new Crossword();
+            return crossword;
+        }
+
         bool IsValidPosition(int x , int y)
         {
             return x >= 0 && y >= 0 && x < _n && y < _m;
