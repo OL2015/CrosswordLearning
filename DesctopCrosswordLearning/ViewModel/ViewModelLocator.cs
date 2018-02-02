@@ -24,14 +24,15 @@ namespace DesctopCrosswordLearning.ViewModel
     /// application and provides an entry point for the bindings.
     /// </summary>
     public class ViewModelLocator
-    {
+    {        
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
         static ViewModelLocator()
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
-            SimpleIoc.Default.Register<IWordSourceService>();
+            SimpleIoc.Default.Register<IWordSourceService, WordSourceService>();
+           // SimpleIoc.Default.Register<IOpenViewService, OpenViewService>();
 
             ////if (ViewModelBase.IsInDesignModeStatic)
             ////{
@@ -46,21 +47,25 @@ namespace DesctopCrosswordLearning.ViewModel
 
             SimpleIoc.Default.Register<MainViewModel>();
         }
+        
+       
 
         /// <summary>
-        /// Gets the <see cref="MainViewModel"/> property.
+        /// Gets the OpenViewService property.
         /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance",
-            "CA1822:MarkMembersAsStatic",
-            Justification = "This non-static member is needed for data binding purposes.")]
-        public static MainViewModel Main //dsljf'sdjfk
+        "CA1822:MarkMembersAsStatic",
+        Justification = "This non-static member is needed for data binding purposes.")]
+        public static MainViewModel MainVM
         {
             get
             {
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
+
         
+
         public static void Cleanup()
         {
             // TODO Clear the ViewModels

@@ -81,7 +81,7 @@ namespace LogicCrosswordLearning.CrosswordCreator
             }
         }
 
-        public bool inRTL{ get; set; }
+        public bool inRTL{ get; set; }        
 
         public Crossword GetCrossword()
         {

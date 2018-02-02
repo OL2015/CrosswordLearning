@@ -22,5 +22,14 @@ namespace DesctopCrosswordLearning.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\\\Projects\\\\GitHub\\\\CrosswordLearning\\\\ResourceFile\\\\testwords.txt")]
+        public string wordFilePath {
+            get {
+                return ((string)(this["wordFilePath"]));
+            }
+        }
     }
 }

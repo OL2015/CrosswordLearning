@@ -21,12 +21,13 @@ namespace DesctopCrosswordLearning
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        public MainViewModel MainVM { get; set; }
         public MainWindow()
         {
+            
             InitializeComponent();
-            var mv = ViewModelLocator.Main;
-            DataContext = mv;
+            MainVM = ViewModelLocator.MainVM;
+            DataContext = MainVM;
         }
     }
 }

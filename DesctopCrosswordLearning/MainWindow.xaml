@@ -6,11 +6,22 @@
         xmlns:local="clr-namespace:DesctopCrosswordLearning"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
-    <StackPanel HorizontalAlignment="Left">
-        <ListBox Width="20" Height="20"/>
-        <Button Content="Get Words"/>
-        <ListView ItemsSource="{Binding SelectedWords}">
-            
-        </ListView>
+    <StackPanel HorizontalAlignment="Left" Margin="30">
+        <StackPanel Orientation="Horizontal" Margin="0 0 0 20">
+            <TextBlock Text="Quantity of words" Padding="0 0 10 0"/>
+            <TextBox Text="{Binding QuantityWords, Mode=TwoWay}"/>
+        </StackPanel>
+        <ListView ItemsSource="{Binding SelectedWords}"
+                  Margin="0 0 0 20">
+            <ListView.View>
+                <GridView>
+                    <GridView.Columns>
+                        <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Path=Id}"></GridViewColumn>
+                        <GridViewColumn Header="Definition" DisplayMemberBinding="{Binding Path=Definition}"></GridViewColumn>
+                    </GridView.Columns>
+                </GridView>
+            </ListView.View>
+        </ListView>       
+        <Button Content="Get Words" Padding="10"/>
     </StackPanel>
 </Window>
