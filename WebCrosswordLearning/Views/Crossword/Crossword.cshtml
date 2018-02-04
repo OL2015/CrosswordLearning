@@ -10,37 +10,89 @@
 <script>
     $(document).ready(
         function () {
-            $(".crossword-row > div").click(function (event) {
-                alert("1");
-                //var kid = $(event.target).child().hasClass("invisible-char");
-                $(".crossword-row > div").closest("span").removeClass("invisible-char").addClass("visible-char");
+            var z;
+            $(".crossword-row > div").dblclick(function () {
+                if ($(this).find("span").hasClass("invisible-char"))
+                    $(this).find("span").removeClass("invisible-char").addClass("visible-char");
             });
+            $(".crossword-row > div").click(function () {
+                if ($(this).find("span").hasClass("invisible-char")) {
+                    z = $(this).find("span");
+                    //alert($(z));
+                    
+                    //$(this).find("span").removeClass("invisible-char").addClass("visible-char").focus();
+                    $(this).removeProp("background-color").addClass("focusable");
+                }
+            });
+
+            $(document).bind('keydown', function (e) {
+                v 
+
+                alert(e.which);
+                $(z).removeClass("invisible-char").addClass("visible-char");
+                $(z).text(String.fromCharCode(e.which).toLowerCase());
+            });
+            
         }
+        
     )
 </script>
 
 
 <h2>@ViewData["Title"]</h2>
 <div id="crossword">
-    <div id="board" style="width: @(Model.M*27+1)px; height: @(Model.N*27+1)px">
-        @for (int row = 0; row < Model.M; row++)
-        {
-            <div class="crossword-row">
-                @for (int col = 0; col < Model.N; col++)
-                {
-                    bool val = char.IsLetter(Model.Board[col, row]);
-                    @if (!val)
-                    {
-                        <div class="blank"><span>_</span></div>
-                    }
-                    else
-                    {
-                        <div class=""><span class="invisible-char">@Model.Board[col, row]</span></div>
-                    }
-                }
-            </div>
 
-        }
+    <div id="container-board">
+        <div id="board" style="width: @(Model.M*27+1)px; height: @(Model.N*27+1)px; margin-bottom: 10px;">
+            @for (int y = 0; y < Model.M; y++)
+            {
+                <div class="crossword-row">
+                    @for (int x = 0; x < Model.N; x++)
+                    {
+                        bool val = char.IsLetter(Model.Board[x, y]);
+
+                        int? cell = Model.GetWordPos(x, y);
+
+                        @if (!val)
+                        {
+                            <div class="blank"><span>_</span></div>
+                        }
+                        else
+                        {
+                            <div class="">
+                                @if (cell.HasValue)
+                                {
+                                    <span class="number"><sup>@cell.Value</sup></span>
+                                }
+                                <span class="invisible-char">@Model.Board[x, y]</span>
+                            </div>
+                        }
+                    }
+                </div>
+
+            }
+        </div>
+        <button type="submit" class="btn btn-primary">Check</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">Show Result</button>
+        <button type="submit" class="btn btn-primary">New</button>
     </div>
-    <div id="container-definitions"></div>
+
+    <div id="container-definitions">
+        <div class="down-definitions">
+            <h4>Down Definitions</h4>
+            @foreach (var dd in Model.VerticalWords.Keys)
+            {
+                <div><span>@Model.GetWordPos(dd.Item1, dd.Item2) </span>@Model.VerticalWords[dd].Definition</div>
+            }
+        </div>
+        <div class="cross-definitions">
+            <h4>Accross Definitions</h4>
+            @foreach (var dd in Model.HorizontalWords.Keys)
+            {
+                <div><span>@Model.GetWordPos(dd.Item1, dd.Item2) </span>@Model.HorizontalWords[dd].Definition</div>
+            }
+        </div>
+    </div>
+    <div class="clear"></div>
 </div>

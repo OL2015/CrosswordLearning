@@ -85,8 +85,9 @@ namespace LogicCrosswordLearning.CrosswordCreator
 
         public Crossword GetCrossword()
         {
-            Crossword crossword = new Crossword();
-            return crossword;
+            //Crossword crossword = new Crossword();
+            //return crossword;
+            throw new NotImplementedException();
         }
 
         bool IsValidPosition(int x , int y)

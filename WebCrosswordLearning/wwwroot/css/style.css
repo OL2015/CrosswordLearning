@@ -1,9 +1,15 @@
 ﻿#crossword {
     margin: 50px;
+    clear:both;
 }
+div {
+    display: block;
+}
+
 #board {
     border-top: 1px solid #aaa;
     border-left: 1px solid #aaa;
+    margin-top: 10px;
 }
 
 .crossword-row{
@@ -15,7 +21,7 @@
     background-color: #ccc;
 }
 
-.div{display:block;}
+
 
 .crossword-row > div {
     float: left;
@@ -36,4 +42,30 @@
 
 .visible-char {
     visibility: visible;
+}
+
+#container-board {
+    float: left;
+}
+
+#container-definitions {
+    float: left;
+    margin: 0 0 0 30px;
+}
+
+.clear{clear:both;}
+
+.down-definitions
+{
+    margin-bottom: 20px;
+}
+
+.number
+{
+    font-size: 10px;
+}
+
+.focusable
+{
+    background-color: yellow;
 }
