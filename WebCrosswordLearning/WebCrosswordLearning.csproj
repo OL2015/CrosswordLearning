@@ -5,6 +5,13 @@
     <UserSecretsId>aspnet-WebCrosswordLearning-5733FD82-1D8E-449E-AAC9-8EA909620295</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Style\**" />
+    <Content Remove="Style\**" />
+    <EmbeddedResource Remove="Style\**" />
+    <None Remove="Style\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.3" />
@@ -24,10 +31,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LogicCrosswordLearning\LogicCrosswordLearning.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Style\" />
   </ItemGroup>
 
 </Project>

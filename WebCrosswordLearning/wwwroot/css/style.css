@@ -60,12 +60,13 @@ div {
     margin-bottom: 20px;
 }
 
-.number
-{
+.number {
+    position: relative;
+    left: -8px;
+    top: -2px;
     font-size: 10px;
 }
 
-.focusable
-{
-    background-color: yellow;
+.crossword-row > div:focus {
+    background: yellow;
 }
