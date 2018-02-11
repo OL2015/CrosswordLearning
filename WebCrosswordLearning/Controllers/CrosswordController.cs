@@ -5,7 +5,7 @@ using WebCrosswordLearning.ViewModels;
 
 namespace WebCrosswordLearning.Controllers
 {
-    
+
     public class CrosswordController : Controller
     {
         private IWordSourceService wordSourceService;
@@ -21,11 +21,17 @@ namespace WebCrosswordLearning.Controllers
             var crossword = wordSourceService.GetCrossword(n, m);
             return View("Crossword", crossword);
         }
-        
-        [HttpPost]        
-        public void PostCrossword(string req)
+
+        [HttpPost]
+        public string Index([FromBody] Tag tag)
         {
-            var zzz = req;
+            var zzz = tag.Req;
+            return "Success";
         }
+    }
+
+    public class Tag
+    {
+        public string Req { get; set; }
     }
 }

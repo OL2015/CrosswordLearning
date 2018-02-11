@@ -28,14 +28,63 @@
             });
 
             $(document).bind('keydown', function (e) {
-                if (e.which >= 65 && e.which <= 90)
+                if (e.which >= 65 && e.which <= 90) {
                     //alert(e.which);
                     //$(z).removeClass("invisible-char").addClass("visible-char");
                     $(z).text(String.fromCharCode(e.which).toLowerCase());
+                    //SetAnswerValue();
+                }
+            });
+
+            $("#btnCheck").on("click", function (event) {
+                SetAnswerValue();
+                var jsonStr = { "Req": ComposeAnswerString() };
+                //alert(JSON.stringify(req));
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    url: '/Crossword/Index',
+                    data: JSON.stringify(jsonStr),
+                    contentType: 'application/json',
+                    success: function (data) {
+                        alert(data);
+                    }
+                });
             });
 
         }
     )
+
+    function SetAnswerValue() {
+        var v = ComposeAnswerString();
+        alert(v);
+        $("#req").val(v);
+
+    }
+
+    function ComposeAnswerString() {
+        var m = $("#board").children("div.crossword-row");
+        var result = "";
+        $.each(m, function (i) {
+            var elems = $(m[i]).children("div");
+            $.each(elems, function (j) {
+                if ($(elems[j]).hasClass("blank")) {
+                    result += "_";
+                }
+                else {
+                    var el = $(elems[j]).children("span.word").text();
+                    if (el) {
+                        result += el;
+                    }
+                    else
+                        result += "*";
+                }
+
+            });
+        });
+        return result;
+    }
+
     //var data = {
     //    crossword: "www"
     //};
@@ -55,40 +104,42 @@
 <div id="crossword">
 
     <div id="container-board">
-        <form asp-controller="Crossword" asp-action="Index">
-            <div id="board" style="width: @(Model.M*27+1)px; height: @(Model.N*27+1)px; margin-bottom: 10px;">
-                @for (int y = 0; y < Model.M; y++)
-                {
-                    <div class="crossword-row">
-                        @for (int x = 0; x < Model.N; x++)
+        @*<form asp-controller="Crossword" asp-action="Index">*@
+        <div id="board" style="width: @(Model.M*27+1)px; height: @(Model.N*27+1)px; margin-bottom: 10px;">
+            @for (int y = 0; y < Model.M; y++)
+            {
+                <div class="crossword-row">
+                    @for (int x = 0; x < Model.N; x++)
+                    {
+                        bool val = char.IsLetter(Model.Board[x, y]);
+
+                        int? cell = Model.GetWordPos(x, y);
+
+                        @if (!val)
                         {
-                            bool val = char.IsLetter(Model.Board[x, y]);
-
-                            int? cell = Model.GetWordPos(x, y);
-
-                            @if (!val)
-                            {
-                                <div class="blank"><span>_</span></div>
-                            }
-                            else
-                            {
-                                <div class="">
-                                    @if (cell.HasValue)
-                                    {
-                                        <span class="number"><sup>@cell.Value</sup></span>
-                                    }
-                                    @*<span class="invisible-char">@Model.Board[x, y]</span>*@
-                                    <span rightDitit="@Model.Board[x, y]" class="word"></span>
-                                </div>
-                            }
+                            <div class="blank"><span>_</span></div>
                         }
-                    </div>
+                        else
+                        {
+                            <div class="">
+                                @if (cell.HasValue)
+                                {
+                                    <span class="number"><sup>@cell.Value</sup></span>
+                                }
+                                @*<span class="invisible-char">@Model.Board[x, y]</span>*@
+                                <span rightDitit="@Model.Board[x, y]" class="word"></span>
+                            </div>
+                        }
+                    }
+                </div>
 
-                }
-            </div>
+            }
+        </div>
 
-            <button type="submit" class="btn btn-primary">Check</button>
-        </form>
+        <input name="req" id="req" value="***" />
+
+        @*</form>*@
+        <button class="btn btn-primary" id="btnCheck">Check</button>
         <button type="submit" class="btn btn-primary">Save</button>
         <button type="submit" class="btn btn-primary">Show Result</button>
         <button type="submit" class="btn btn-primary">New</button>
