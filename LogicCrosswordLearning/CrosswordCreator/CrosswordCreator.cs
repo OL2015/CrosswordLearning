@@ -6,6 +6,7 @@ namespace LogicCrosswordLearning.CrosswordCreator
 {
     public class CrosswordCreator
     {
+
         const string Letters = "abcdefghijklmnopqrstuvwxyz";
         readonly int[] _dirX = { 0, 1 };
         readonly int[] _dirY = { 1, 0 };
@@ -16,19 +17,24 @@ namespace LogicCrosswordLearning.CrosswordCreator
         readonly int _m;
         int _hCount, _vCount;
         static Random _rand;
-        private static IList<string> _wordsToInsert;
+        private List<Word> words = new List<Word>();
+        private List<string> _wordsToInsert = new List<string>();
+        Dictionary<Tuple<int, int>, Word> verticalWords = new Dictionary<Tuple<int, int>, Word>();
+        Dictionary<Tuple<int, int>, Word> horizontalWords = new Dictionary<Tuple<int, int>, Word>();
+        private List<Word> notUsedListView = new List<Word>();
         private static char[,] _tempBoard;
         private static int _bestSol;
-        DateTime initialTime;        
+        DateTime initialTime;
 
-        public CrosswordCreator(int xDimen, int yDimen)
+        public CrosswordCreator(int xDimen, int yDimen, IEnumerable<Word> words)
         {
-            _board = new char[xDimen,yDimen];
-            _hWords = new int[xDimen, yDimen];
-            _vWords = new int[xDimen, yDimen];
             _n = xDimen;
             _m = yDimen;
             _rand = new Random();
+            _board = new char[xDimen, yDimen];
+            _hWords = new int[xDimen, yDimen];
+            _vWords = new int[xDimen, yDimen];
+
 
             for (var i = 0; i < _n; i++)
             {
@@ -37,6 +43,7 @@ namespace LogicCrosswordLearning.CrosswordCreator
                     _board[i, j] = ' ';
                 }
             }
+            this.words.AddRange(words);
         }
 
         public override string ToString()
@@ -81,19 +88,138 @@ namespace LogicCrosswordLearning.CrosswordCreator
             }
         }
 
-        public bool inRTL{ get; set; }        
+        public bool inRTL { get; set; }
+
+
+
 
         public Crossword GetCrossword()
         {
-            //Crossword crossword = new Crossword();
-            //return crossword;
-            throw new NotImplementedException();
+            Crossword crossword = new Crossword(_board, verticalWords, horizontalWords);
+            return crossword;
         }
 
-        bool IsValidPosition(int x , int y)
+        static int Comparer(Word w1, Word w2)
         {
-            return x >= 0 && y >= 0 && x < _n && y < _m;
+            string a = w1.Value;
+            string b = w1.Value;
+            var temp = a.Length.CompareTo(b.Length);
+            return temp == 0 ? a.CompareTo(b) : temp;
         }
+
+        void GenCrossword()
+        {
+            var wws = words.Select(z => z.Value);
+            _wordsToInsert.AddRange(wws);
+            words.Sort(Comparer);
+            words.Reverse(); 
+
+            foreach (var word in words)
+            {
+                //var wordToInsert = ((bool)RTLRadioButton.IsChecked) ? word.Reverse().Aggregate("",(x,y) => x + y) : word;
+
+                switch (AddWord(word.Value))
+                {
+                    case 0:
+                        horizontalWords.Add(word);
+                        break;
+                    case 1:
+                        verticalWords.Add(word);
+                        break;
+                    default:
+                        notUsedListView.Add(word);
+                        break;
+
+                }
+            } 
+            
+        }
+
+        public int AddWord(string word)
+        {
+
+            //var max = int.MaxValue;
+            #region ubicate the word into the board
+            var wordToInsert = word;
+            var info = BestPosition(wordToInsert);
+            if (info != null)
+            {
+                if (info.Item3 == 0)
+                {
+                    _hCount++;
+                    if (inRTL)
+                        wordToInsert = word.Aggregate("", (x, y) => y + x);
+                }
+                else
+                    _vCount++;
+                var value = info.Item3 == 0 ? _hCount : _vCount;
+                PutWord(wordToInsert, info.Item1, info.Item2, info.Item3, value);
+                return info.Item3;
+            }
+            #endregion
+
+            return -1; 
+        }
+
+        void PutWord(string word, int x, int y, int dir, int value)
+        {
+            var mat = dir == 0 ? _hWords : _vWords;
+
+            for (var i = 0; i < word.Length; i++)
+            {
+                int x1 = x + _dirX[dir] * i, y1 = y + _dirY[dir] * i;
+                _board[x1, y1] = word[i];
+                mat[x1, y1] = value;
+            }
+
+            int xStar = x - _dirX[dir], yStar = y - _dirY[dir];
+            if (IsValidPosition(xStar, yStar)) _board[xStar, yStar] = '*';
+            xStar = x + _dirX[dir] * word.Length;
+            yStar = y + _dirY[dir] * word.Length;
+            if (IsValidPosition(xStar, yStar)) _board[xStar, yStar] = '*';
+        }
+
+
+        Tuple<int, int, int> BestPosition(string word)
+        {
+            var positions = FindPositions(word);
+            if (positions.Count > 0)
+            {
+                var index = _rand.Next(positions.Count);
+                return positions[index];
+            }
+            return null;
+        }
+
+        List<Tuple<int, int, int>> FindPositions(string word)
+        {
+            #region find best position to ubicate the word into the board
+            var max = 0;
+            var positions = new List<Tuple<int, int, int>>();
+            for (var x = 0; x < _n; x++)
+            {
+                for (var y = 0; y < _m; y++)
+                {
+                    for (var i = 0; i < _dirX.Length; i++)
+                    {
+                        var dir = i;
+                        var wordToInsert = i == 0 && inRTL ? word.Aggregate("", (a, b) => b + a) : word;
+                        var count = CanBePlaced(wordToInsert, x, y, dir);
+
+                        if (count < max) continue;
+                        if (count > max)
+                            positions.Clear();
+
+                        max = count;
+                        positions.Add(new Tuple<int, int, int>(x, y, dir));
+                    }
+                }
+            }
+            #endregion
+
+            return positions;
+        }
+
 
         int CanBePlaced(string word, int x, int y, int dir)
         {
@@ -141,8 +267,8 @@ namespace LogicCrosswordLearning.CrosswordCreator
                 if (!(_board[xStar, yStar] == ' ' || _board[xStar, yStar] == '*'))
                     return -1;
 
-            xStar = x + _dirX[dir]*word.Length;
-            yStar = y + _dirY[dir]*word.Length;
+            xStar = x + _dirX[dir] * word.Length;
+            yStar = y + _dirY[dir] * word.Length;
             if (IsValidPosition(xStar, yStar))
                 if (!(_board[xStar, yStar] == ' ' || _board[xStar, yStar] == '*'))
                     return -1;
@@ -151,215 +277,10 @@ namespace LogicCrosswordLearning.CrosswordCreator
 
         }
 
-        void PutWord(string word , int x , int y , int dir, int value)
+        bool IsValidPosition(int x, int y)
         {
-            var mat = dir==0 ? _hWords :_vWords;
-
-            for (var i = 0; i < word.Length; i++)
-            {
-                int x1 = x + _dirX[dir]*i, y1 = y + _dirY[dir]*i;
-                _board[x1, y1] = word[i];
-                mat[x1, y1] = value;
-            }
-
-            int xStar = x - _dirX[dir], yStar = y - _dirY[dir];
-            if (IsValidPosition(xStar, yStar)) _board[xStar, yStar] = '*';
-            xStar = x + _dirX[dir]*word.Length;
-            yStar = y + _dirY[dir]*word.Length;
-            if (IsValidPosition(xStar, yStar)) _board[xStar, yStar] = '*';
+            return x >= 0 && y >= 0 && x < _n && y < _m;
         }
-
-        public Tuple<int,int,int> AddWord(string word)
-        {
-            
-            //var max = int.MaxValue;
-            #region ubicate the word into the board
-            var wordToInsert = word;
-            var info = BestPosition(wordToInsert);
-            if (info != null)
-            {
-                if (info.Item3==0)
-                {
-                    _hCount++;
-                    if (inRTL)
-                        wordToInsert = word.Aggregate("", (x, y) => y + x);
-                }
-                else
-                    _vCount++;
-                var value = info.Item3 == 0 ? _hCount : _vCount;
-                PutWord(wordToInsert , info.Item1 , info.Item2 , info.Item3 , value);
-                return info;
-                //return Info.Item3;
-            }
-            #endregion
-
-            return null;
-
-        }
-
-        List<Tuple<int, int, int>> FindPositions(string word)
-        {
-            #region find best position to ubicate the word into the board
-            var max = 0;
-            var positions = new List<Tuple<int, int, int>>();
-            for (var x = 0; x < _n; x++)
-            {
-                for (var y = 0; y < _m; y++)
-                {
-                    for (var i = 0; i < _dirX.Length; i++)
-                    {
-                        var dir = i;
-                        var wordToInsert = i == 0 && inRTL ? word.Aggregate("", (a, b) => b + a) : word;
-                        var count = CanBePlaced(wordToInsert, x, y, dir);
-
-                        if (count < max) continue;
-                        if (count > max)
-                            positions.Clear();
-
-                        max = count;
-                        positions.Add(new Tuple<int, int, int>(x, y, dir));
-                    }
-                }
-            }
-            #endregion
-
-            return positions;
-        }
-
-        Tuple<int,int,int > BestPosition(string word)
-        {
-            var positions = FindPositions(word);
-            if (positions.Count > 0)
-            {
-                var index = _rand.Next(positions.Count);
-                return positions[index];
-            }
-            return null;
-        }
-
-        public bool IsLetter(char a)
-        {
-            return Letters.Contains(a.ToString());
-        }
-
-        public char[,] GetBoard
-        {
-            get
-            {
-                return _board;
-            }
-        }
-
-        public void Reset()
-        {
-            for (var i = 0; i < _n; i++)
-            {
-                for (var j = 0; j < _m; j++)
-                {
-                    _board[i, j] = ' ';
-                    _vWords[i, j] = 0;
-                    _hWords[i, j] = 0;
-                    _hCount = _vCount = 0;
-                }
-            }
-        }
-
-        public void AddWords(IList<string> words)
-        {
-            _wordsToInsert = words;
-            _bestSol = N*M;
-            initialTime = DateTime.Now;
-            Gen(0);
-            
-            _board = _tempBoard;
-        }
-
-        int FreeSpaces()
-        {
-            var count = 0;
-            for (var i = 0; i < N; i++)
-            {
-                for (var j = 0; j < M; j++)
-                {
-                    if (_board[i, j] == ' ' || _board[i, j] == '*')
-                        count++;
-                }
-            }
-            return count;
-        }
-
-        void Gen(int pos)
-        {
-            
-            if (pos >= _wordsToInsert.Count || (DateTime.Now-initialTime).Minutes > 1 )
-                return;
-
-            for (int i = pos; i < _wordsToInsert.Count; i++)
-            {
-
-                var posi = BestPosition(_wordsToInsert[i]);
-                if (posi!=null)
-                {
-                    var word = _wordsToInsert[i];
-                    if (posi.Item3==0 && inRTL)
-                        word = word.Aggregate("", (x, y) => y + x);
-                    var value = posi.Item3 == 0 ? _hCount : _vCount;
-                    PutWord(word,posi.Item1,posi.Item2,posi.Item3,value);
-                    Gen(pos + 1);
-                    RemoveWord(word, posi.Item1, posi.Item2, posi.Item3);
-                }
-                else
-                {
-                    Gen(pos + 1);
-                }
-            }
-
-            var c = FreeSpaces();
-            if (c >= _bestSol) return;
-            _bestSol = c;
-            _tempBoard = _board.Clone() as char[,];
-        }
-
-        private void RemoveWord(string word, int x, int y, int dir)
-        {
-            var mat = dir == 0 ? _hWords : _vWords;
-            var mat1 = dir == 0 ? _vWords : _hWords;
-
-            for (var i = 0; i < word.Length; i++)
-            {
-                int x1 = x + _dirX[dir] * i, y1 = y + _dirY[dir] * i;
-                if (mat1[x1, y1] == 0)
-                    _board[x1, y1] = ' ';
-                mat[x1, y1] = 0;
-            }
-
-            int xStar = x - _dirX[dir], yStar = y - _dirY[dir];
-            if (IsValidPosition(xStar, yStar) && HasFactibleValueAround(xStar, yStar))
-                _board[xStar, yStar] = ' ';
-                
-            xStar = x + _dirX[dir] * word.Length;
-            yStar = y + _dirY[dir] * word.Length;
-            if (IsValidPosition(xStar, yStar) && HasFactibleValueAround(xStar, yStar))
-                _board[xStar, yStar] = ' ';
-        }
-
-        bool HasFactibleValueAround(int x , int y)
-        {
-            for (var i = 0; i < _dirX.Length; i++)
-            {
-                int x1 = x + _dirX[i] , y1 = y + _dirY[i] ;
-                if (IsValidPosition(x1, y1) && (_board[x1, y1] != ' ' || _board[x1, y1] == '*'))
-                    return true;
-                x1 = x - _dirX[i];
-                y1 = y - _dirY[i];
-                if (IsValidPosition(x1, y1) && (_board[x1, y1] != ' ' || _board[x1, y1] == '*'))
-                    return true;
-
-            }
-            return false;
-        }
-
-
     }
 
 }

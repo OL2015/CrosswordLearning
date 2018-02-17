@@ -7,7 +7,7 @@ namespace LogicCrosswordLearning.Services
     {
         public Crossword GetCrossword(int n, int m, IEnumerable<Word> words)
         {
-            var crosswordCreator = new CrosswordCreator.CrosswordCreator(n, m);
+            var crosswordCreator = new CrosswordCreator.CrosswordCreator(n, m, words);
             
             //foreach (var word in words)
             //{

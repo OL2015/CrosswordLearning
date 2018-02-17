@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using WebCrosswordLearning.ViewModels;
+using LogicCrosswordLearning.CrosswordCreator;
 
 namespace WebCrosswordLearning.Services
 {
@@ -27,11 +28,20 @@ namespace WebCrosswordLearning.Services
 
         public Crossword GetCrossword(int? n, int? m)
         {
+            var words = GetWords(quantityWord);
+            CrosswordCreator creator;
             Crossword crossword;
             if (n.HasValue && m.HasValue)
-                crossword = GetDummyCrossword(n.Value, m.Value);
+            {
+                //crossword = GetDummyCrossword(n.Value, m.Value);
+                creator = new CrosswordCreator(n.Value, m.Value, words);
+            }
             else
-                crossword = GetDummyCrossword(5, 5);
+            {
+                //crossword = GetDummyCrossword(5, 5);
+                creator = new CrosswordCreator(5, 5, words);
+            }
+            crossword = creator.GetCrossword();
             return crossword;
         }
 
