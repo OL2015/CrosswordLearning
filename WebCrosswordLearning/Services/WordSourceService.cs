@@ -3,18 +3,21 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using WebCrosswordLearning.ViewModels;
+using LogicCrosswordLearning.Services;
 
 namespace WebCrosswordLearning.Services
 {
     public class WordSourceService : IWordSourceService
     {
         private IConfiguration configuration;
+        private ILearningDictionaryWordSource wordSource;
         private int quantityWord;
 
-        public WordSourceService(IConfiguration configuration)
+        public WordSourceService(IConfiguration configuration, 
+            ILearningDictionaryWordSource wordSource)
         {
             this.configuration = configuration;
+            this.wordSource = wordSource;
         }
 
         public IEnumerable<Word> GetWords(int quantityWord)
@@ -27,13 +30,35 @@ namespace WebCrosswordLearning.Services
 
         public Crossword GetCrossword(int? n, int? m)
         {
-            Crossword crossword;
+            Crossword crossword;            
             if (n.HasValue && m.HasValue)
                 crossword = GetDummyCrossword(n.Value, m.Value);
             else
                 crossword = GetDummyCrossword(5, 5);
             return crossword;
+        }          
+
+        public IEnumerable<Word> GetLearningWords(int cnt)
+        {
+            var words = wordSource.RandomWords(cnt);
+            return words;
         }
+        //private Crossword GenerateCrossword(int n, int m)
+        //{
+        //    if (n < 5 || m < 5)
+        //        throw new ApplicationException("Field can't be less than 5*5");
+            
+        //    var board = new char[n, m];
+
+        //    var horizontalWords = new Dictionary<Tuple<int, int>, Word>();
+        //    var verticalWords = new Dictionary<Tuple<int, int>, Word>();
+
+            
+        //    horizontalWords.Add(new Tuple<int, int>(0, 0), new Word() { Id = 1, Value = "cat" });
+        //    horizontalWords.Add(new Tuple<int, int>(0, 3), new Word() { Id = 2, Value = "small" });
+        //    Crossword crossword = new Crossword(board, verticalWords, horizontalWords);
+        //    return crossword;
+        //}
 
         private Crossword GetDummyCrossword(int n, int m)
         {

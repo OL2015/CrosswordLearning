@@ -4,13 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WebCrosswordLearning.Data;
 using WebCrosswordLearning.Models;
 using WebCrosswordLearning.Services;
+using LogicCrosswordLearning.Services;
+using LogicCrosswordLearning.WordsResource;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebCrosswordLearning
 {
@@ -30,10 +33,11 @@ namespace WebCrosswordLearning
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                 .AddDefaultTokenProviders();
 
             // Add application services.
+            services.AddScoped<ILearningDictionaryWordSource, LearningDictionaryWordSource>();
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddScoped<IWordSourceService, WordSourceService>();
 

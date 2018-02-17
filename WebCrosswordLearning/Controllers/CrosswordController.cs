@@ -1,4 +1,4 @@
-﻿using LogicCrosswordLearning;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using WebCrosswordLearning.Services;
 using WebCrosswordLearning.ViewModels;
@@ -27,6 +27,13 @@ namespace WebCrosswordLearning.Controllers
         {
             var zzz = tag.Req;
             return "Success";
+        }
+
+        [HttpGet]
+        public IActionResult ListWords()
+        {
+            var list = wordSourceService.GetLearningWords(100);
+            return View("ListWord", list);
         }
     }
 

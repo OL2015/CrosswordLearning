@@ -8,5 +8,6 @@ namespace WebCrosswordLearning.Services
     {    
         IEnumerable<Word> GetWords(int cnt);
         Crossword GetCrossword(int? n, int? m);
+        IEnumerable<Word> GetLearningWords(int cnt);
     }
 }
