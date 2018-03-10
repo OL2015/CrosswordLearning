@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace LogicCrosswordLearning.Tests
+namespace LogicCrosswordLearningData.Tests
 {
     [TestClass()]
     public class FileWordSourceTests

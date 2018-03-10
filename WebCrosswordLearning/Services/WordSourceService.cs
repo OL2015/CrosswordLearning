@@ -11,11 +11,14 @@ namespace WebCrosswordLearning.Services
     public class WordSourceService : IWordSourceService
     {
         private IConfiguration configuration;
+        private ILearningDictionaryWordSource wordSource;
         private int quantityWord;
 
-        public WordSourceService(IConfiguration configuration)
+        public WordSourceService(IConfiguration configuration, 
+            ILearningDictionaryWordSource wordSource)
         {
             this.configuration = configuration;
+            this.wordSource = wordSource;
         }
 
         public IEnumerable<Word> GetWords(int quantityWord)
@@ -43,7 +46,29 @@ namespace WebCrosswordLearning.Services
             }
             crossword = creator.GetCrossword();
             return crossword;
+        }          
+
+        public IEnumerable<Word> GetLearningWords(int cnt)
+        {
+            var words = wordSource.RandomWords(cnt);
+            return words;
         }
+        //private Crossword GenerateCrossword(int n, int m)
+        //{
+        //    if (n < 5 || m < 5)
+        //        throw new ApplicationException("Field can't be less than 5*5");
+            
+        //    var board = new char[n, m];
+
+        //    var horizontalWords = new Dictionary<Tuple<int, int>, Word>();
+        //    var verticalWords = new Dictionary<Tuple<int, int>, Word>();
+
+            
+        //    horizontalWords.Add(new Tuple<int, int>(0, 0), new Word() { Id = 1, Value = "cat" });
+        //    horizontalWords.Add(new Tuple<int, int>(0, 3), new Word() { Id = 2, Value = "small" });
+        //    Crossword crossword = new Crossword(board, verticalWords, horizontalWords);
+        //    return crossword;
+        //}
 
         private Crossword GetDummyCrossword(int n, int m)
         {

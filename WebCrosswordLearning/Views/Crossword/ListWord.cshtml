@@ -1,0 +1,14 @@
+﻿@model IEnumerable<LogicCrosswordLearning.Word>
+
+@{
+
+    ViewData["Title"] = "ListWords";
+}
+
+<h2>@ViewData["Title"]</h2>
+<div>
+    @foreach (var word in Model)
+    {
+        <div>@word.Value.ToString()</div>
+    }
+</div>
