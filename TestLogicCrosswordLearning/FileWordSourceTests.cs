@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LogicCrosswordLearning;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
 namespace LogicCrosswordLearningData.Tests
@@ -9,8 +10,8 @@ namespace LogicCrosswordLearningData.Tests
         [TestMethod()]
         public void FileWordSourceTest()
         {
-            //string filename = @"C:\_users\ama\LearningCrossword\code\testdata\testwords.txt";
-            string filename = @"D:\Projects\GitHub\CrosswordLearning\ResourceFile\testwords.txt";
+            string filename = @"C:\_users\ama\LearningCrossword\code\testdata\testwords.txt";
+            //string filename = @"D:\Projects\GitHub\CrosswordLearning\ResourceFile\testwords.txt";
             var fileWordSource = new FileWordSource(filename);
 
             Assert.IsNotNull(value: fileWordSource);
@@ -19,8 +20,8 @@ namespace LogicCrosswordLearningData.Tests
         [TestMethod()]
         public void GetWordsTest()
         {
-            //string filename = @"C:\_users\ama\LearningCrossword\code\testdata\testwords.txt";
-            string filename = @"D:\Projects\GitHub\CrosswordLearning\ResourceFile\testwords.txt";
+            string filename = @"C:\_users\ama\LearningCrossword\code\testdata\testwords.txt";
+            //string filename = @"D:\Projects\GitHub\CrosswordLearning\ResourceFile\testwords.txt";
             var fileWordSource = new FileWordSource(filename);
             var words = fileWordSource.GetWords(1);
             

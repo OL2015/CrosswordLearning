@@ -1,5 +1,5 @@
 ﻿using DesctopCrosswordLearning.Properties;
-using LogicCrosswordLearningData;
+using LogicCrosswordLearning;
 using System;
 using System.Collections.Generic;
 using System.Linq;

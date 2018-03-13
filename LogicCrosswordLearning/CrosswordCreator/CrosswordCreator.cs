@@ -8,23 +8,24 @@ namespace LogicCrosswordLearning.CrosswordCreator
     {
 
         const string Letters = "abcdefghijklmnopqrstuvwxyz";
+
         readonly int[] _dirX = { 0, 1 };
         readonly int[] _dirY = { 1, 0 };
+        private List<Word> words = new List<Word>();
+        readonly int _n;
+        readonly int _m;
         char[,] _board;
         readonly int[,] _hWords;
         readonly int[,] _vWords;
-        readonly int _n;
-        readonly int _m;
+       
         int _hCount, _vCount;
         static Random _rand;
-        private List<Word> words = new List<Word>();
+        
         private List<string> _wordsToInsert = new List<string>();
         Dictionary<Tuple<int, int>, Word> verticalWords = new Dictionary<Tuple<int, int>, Word>();
         Dictionary<Tuple<int, int>, Word> horizontalWords = new Dictionary<Tuple<int, int>, Word>();
         private List<Word> notUsedListView = new List<Word>();
-        private static char[,] _tempBoard;
-        private static int _bestSol;
-        DateTime initialTime;
+         
 
         public CrosswordCreator(int xDimen, int yDimen, IEnumerable<Word> words)
         {
@@ -45,97 +46,45 @@ namespace LogicCrosswordLearning.CrosswordCreator
             }
             this.words.AddRange(words);
         }
-
-        public override string ToString()
-        {
-            string result = "";
-            for (int i = 0; i < _n; i++)
-            {
-                for (int j = 0; j < _m; j++)
-                {
-                    result += Letters.Contains(_board[i, j].ToString()) ? _board[i, j] : ' ';
-                }
-                if (i < _n - 1) result += '\n';
-            }
-            return result;
-        }
-
-        public char this[int i, int j]
-        {
-            get
-            {
-                return _board[i, j];
-            }
-            set
-            {
-                _board[i, j] = value;
-            }
-        }
-
-        public int N
-        {
-            get
-            {
-                return _n;
-            }
-        }
-
-        public int M
-        {
-            get
-            {
-                return _m;
-            }
-        }
-
-        public bool inRTL { get; set; }
-
-
-
+ 
 
         public Crossword GetCrossword()
         {
+            // create _board, verticalWords, horizontalWords
+            GenCrossword();
             Crossword crossword = new Crossword(_board, verticalWords, horizontalWords);
             return crossword;
         }
 
-        static int Comparer(Word w1, Word w2)
-        {
-            string a = w1.Value;
-            string b = w1.Value;
-            var temp = a.Length.CompareTo(b.Length);
-            return temp == 0 ? a.CompareTo(b) : temp;
-        }
-
         void GenCrossword()
         {
-            var wws = words.Select(z => z.Value);
-            _wordsToInsert.AddRange(wws);
-            words.Sort(Comparer);
-            words.Reverse(); 
-
+            horizontalWords.Clear();
+            verticalWords.Clear();
+            notUsedListView.Clear();
+            Reset();
+             
             foreach (var word in words)
             {
                 //var wordToInsert = ((bool)RTLRadioButton.IsChecked) ? word.Reverse().Aggregate("",(x,y) => x + y) : word;
-
-                switch (AddWord(word.Value))
+                var info = AddWord(word.Value);
+                switch (info.Item3)
                 {
                     case 0:
-                        horizontalWords.Add(word);
+                        verticalWords.Add(new Tuple<int,int>(info.Item1, info.Item2), word);
                         break;
                     case 1:
-                        verticalWords.Add(word);
+                        horizontalWords.Add(new Tuple<int, int>(info.Item1, info.Item2), word);
                         break;
                     default:
                         notUsedListView.Add(word);
                         break;
 
                 }
-            } 
+            }
             
         }
 
-        public int AddWord(string word)
+        public Tuple<int, int, int> AddWord(string word)
         {
 
             //var max = int.MaxValue;
@@ -146,19 +95,21 @@ namespace LogicCrosswordLearning.CrosswordCreator
             {
                 if (info.Item3 == 0)
                 {
-                    _hCount++;
-                    if (inRTL)
-                        wordToInsert = word.Aggregate("", (x, y) => y + x);
+                    _hCount++;                    
                 }
                 else
                     _vCount++;
                 var value = info.Item3 == 0 ? _hCount : _vCount;
-                PutWord(wordToInsert, info.Item1, info.Item2, info.Item3, value);
-                return info.Item3;
+                PutWord(wordToInsert, info.Item1, info.Item2, info.Item3, value);                
+            }
+            else
+            {
+                info = new Tuple<int, int, int>(-1, -1, -1);
             }
             #endregion
 
-            return -1; 
+            return info;
+
         }
 
         void PutWord(string word, int x, int y, int dir, int value)
@@ -179,18 +130,6 @@ namespace LogicCrosswordLearning.CrosswordCreator
             if (IsValidPosition(xStar, yStar)) _board[xStar, yStar] = '*';
         }
 
-
-        Tuple<int, int, int> BestPosition(string word)
-        {
-            var positions = FindPositions(word);
-            if (positions.Count > 0)
-            {
-                var index = _rand.Next(positions.Count);
-                return positions[index];
-            }
-            return null;
-        }
-
         List<Tuple<int, int, int>> FindPositions(string word)
         {
             #region find best position to ubicate the word into the board
@@ -203,7 +142,7 @@ namespace LogicCrosswordLearning.CrosswordCreator
                     for (var i = 0; i < _dirX.Length; i++)
                     {
                         var dir = i;
-                        var wordToInsert = i == 0 && inRTL ? word.Aggregate("", (a, b) => b + a) : word;
+                        var wordToInsert = word;
                         var count = CanBePlaced(wordToInsert, x, y, dir);
 
                         if (count < max) continue;
@@ -220,6 +159,30 @@ namespace LogicCrosswordLearning.CrosswordCreator
             return positions;
         }
 
+        Tuple<int, int, int> BestPosition(string word)
+        {
+            var positions = FindPositions(word);
+            if (positions.Count > 0)
+            {
+                var index = _rand.Next(positions.Count);
+                return positions[index];
+            }
+            return null;
+        }
+
+        public void Reset()
+        {
+            for (var i = 0; i < _n; i++)
+            {
+                for (var j = 0; j < _m; j++)
+                {
+                    _board[i, j] = ' ';
+                    _vWords[i, j] = 0;
+                    _hWords[i, j] = 0;
+                    _hCount = _vCount = 0;
+                }
+            }
+        }
 
         int CanBePlaced(string word, int x, int y, int dir)
         {
@@ -281,6 +244,7 @@ namespace LogicCrosswordLearning.CrosswordCreator
         {
             return x >= 0 && y >= 0 && x < _n && y < _m;
         }
+
     }
 
 }

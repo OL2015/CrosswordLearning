@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,9 +7,8 @@ using WebCrosswordLearning.Data;
 using WebCrosswordLearning.Models;
 using WebCrosswordLearning.Services;
 using LogicCrosswordLearning.Services;
-using LogicCrosswordLearning.WordsResource;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using LogicCrosswordLearning;
 
 namespace WebCrosswordLearning
 {
@@ -36,8 +31,7 @@ namespace WebCrosswordLearning
                  .AddEntityFrameworkStores<ApplicationDbContext>()
                  .AddDefaultTokenProviders();
 
-            // Add application services.
-            services.AddScoped<ILearningDictionaryWordSource, LearningDictionaryWordSource>();
+            // Add application services.            
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddScoped<IWordSourceService, WordSourceService>();
 

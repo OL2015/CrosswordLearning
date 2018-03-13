@@ -16,12 +16,17 @@ namespace LogicCrosswordLearning
 
         public int Capacity { get; private set; }
 
+        public FileWordSource()
+        {
+            
+        }
+
 
         public FileWordSource(string filename)
         {
             this.filename = filename;
             crosswordService = new CrosswordService();
-            crosswordService.GetCrossword(5,5, GetWords(2));
+            //crosswordService.GetCrossword(5,5, GetWords(2));            
         }
 
         public IEnumerable<Word> GetWords(int cnt)
@@ -46,6 +51,11 @@ namespace LogicCrosswordLearning
             
         }
 
+        public IEnumerable<Word> GetLearningWords(int cnt)
+        {
+            return crosswordService.GetLearningWords(cnt);
+        }
+
         private void FillWords()
         {
             try
@@ -57,7 +67,10 @@ namespace LogicCrosswordLearning
                     int i = 1;
                     while ((line = reader.ReadLine()) != null)
                     {
-                        var word = new Word() { Id= i, Value = line };
+                        string[] separatiion = line.Split('\t');
+                        
+                        var word = new Word() { Id= i, Value = separatiion[0],
+                            Definition = separatiion.Length > 1 ?  separatiion[1] : ""  };
                         words.Add(word);
                         i++;
                     }                    

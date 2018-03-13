@@ -11,14 +11,11 @@ namespace WebCrosswordLearning.Services
     public class WordSourceService : IWordSourceService
     {
         private IConfiguration configuration;
-        private ILearningDictionaryWordSource wordSource;
-        private int quantityWord;
+        //private int quantityWord= 2;
 
-        public WordSourceService(IConfiguration configuration, 
-            ILearningDictionaryWordSource wordSource)
+        public WordSourceService(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.wordSource = wordSource;
         }
 
         public IEnumerable<Word> GetWords(int quantityWord)
@@ -29,28 +26,26 @@ namespace WebCrosswordLearning.Services
             return v;
         }
 
-        public Crossword GetCrossword(int? n, int? m)
+        public Crossword GetCrossword(int n, int m, int quantityWord)
         {
             var words = GetWords(quantityWord);
             CrosswordCreator creator;
-            Crossword crossword;
-            if (n.HasValue && m.HasValue)
-            {
-                //crossword = GetDummyCrossword(n.Value, m.Value);
-                creator = new CrosswordCreator(n.Value, m.Value, words);
-            }
-            else
-            {
-                //crossword = GetDummyCrossword(5, 5);
-                creator = new CrosswordCreator(5, 5, words);
-            }
+            Crossword crossword; 
+
+             
+                //crossword = GetDummyCrossword(n, m);
+                creator = new CrosswordCreator(n, m, words);
+             
             crossword = creator.GetCrossword();
             return crossword;
         }          
 
         public IEnumerable<Word> GetLearningWords(int cnt)
         {
-            var words = wordSource.RandomWords(cnt);
+            var filepath = configuration.GetConnectionString("FileConnection");
+            //filepath = @"C:\_users\ama\LearningCrossword\code\testdata\testwords.txt";
+            var wordSource = new FileWordSource(filepath);
+            var words = wordSource.GetLearningWords(cnt);
             return words;
         }
         //private Crossword GenerateCrossword(int n, int m)

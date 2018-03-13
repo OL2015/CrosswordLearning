@@ -150,14 +150,14 @@
             <h4>Down Definitions</h4>
             @foreach (var dd in Model.VerticalWords.Keys)
             {
-                <div><span>@Model.GetWordPos(dd.Item1, dd.Item2) </span>@Model.VerticalWords[dd].Definition</div>
+            <div><span>@Model.GetWordPos(dd.Item1, dd.Item2) </span>@Model.VerticalWords[dd].Value - @Model.VerticalWords[dd].Definition</div>
             }
         </div>
         <div class="cross-definitions">
             <h4>Accross Definitions</h4>
             @foreach (var dd in Model.HorizontalWords.Keys)
             {
-                <div><span>@Model.GetWordPos(dd.Item1, dd.Item2) </span>@Model.HorizontalWords[dd].Definition</div>
+            <div><span>@Model.GetWordPos(dd.Item1, dd.Item2) </span>@Model.HorizontalWords[dd].Value - @Model.HorizontalWords[dd].Definition</div>
             }
         </div>
     </div>

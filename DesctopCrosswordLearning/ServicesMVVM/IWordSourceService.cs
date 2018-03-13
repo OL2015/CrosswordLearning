@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using LogicCrosswordLearningData;
+using LogicCrosswordLearning;
 
 namespace DesctopCrosswordLearning.Services
 {

@@ -1,6 +1,6 @@
 using DesctopCrosswordLearning.Services;
 using GalaSoft.MvvmLight;
-using LogicCrosswordLearningData;
+using LogicCrosswordLearning;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;

@@ -5,22 +5,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LogicCrosswordLearning.Services
+namespace LogicCrosswordLearning
 {
-    public class LearningDictionaryWordSource : ILearningDictionaryWordSource
+    public class LearningDictionaryWordSource 
     {
-        private WordsContext context;
+        private WordsContext context = null;
         private List<Word> words;
 
         public LearningDictionaryWordSource()
         {
-            this.context = new WordsContext();
+            
         }
 
-        //public LearningDictionaryWordSource(WordsContext context)
-        //{
-        //    this.context = new WordsContext();
-        //}
+        public LearningDictionaryWordSource(WordsContext context)
+        {
+            this.context = context;
+        }
 
         public IEnumerable<Word> RandomWords(int cnt)
         {

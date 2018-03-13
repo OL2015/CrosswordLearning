@@ -17,7 +17,7 @@ namespace WebCrosswordLearning.Controllers
 
         public IActionResult WordList(int? id)
         {            
-            var words = wordSource.GetWords(2);
+            var words = wordSource.GetWords(20);
             var vm = new WordListViewModel();
             vm.Words = words;
             if (id != null)

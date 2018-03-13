@@ -16,9 +16,9 @@ namespace WebCrosswordLearning.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(int? n, int? m)
+        public IActionResult Index(int n=12, int m=12)
         {
-            var crossword = wordSourceService.GetCrossword(n, m);
+            var crossword = wordSourceService.GetCrossword(n, m, 20);
             return View("Crossword", crossword);
         }
 
